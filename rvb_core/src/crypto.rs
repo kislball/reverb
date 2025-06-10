@@ -1,11 +1,10 @@
 use rsa::Pkcs1v15Encrypt;
-use rsa::pkcs1v15::{Signature, SigningKey, VerifyingKey, Pkcs1v15Sign};
-use rsa::signature::{Signer, Verifier, SignatureEncoding};
+use rsa::pkcs1v15::{Signature, SigningKey, VerifyingKey};
+use rsa::signature::{Signer, Verifier, Keypair, SignatureEncoding};
 use rsa::{
     Error, RsaPrivateKey, RsaPublicKey,
     pkcs1::{self, DecodeRsaPrivateKey, EncodeRsaPrivateKey, EncodeRsaPublicKey},
 };
-use serde::{Deserialize, Serialize};
 
 pub const RSA_KEY_SIZE: usize = 4096;
 
@@ -19,18 +18,33 @@ pub enum CryptoError {
     InvalidKey,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug)]
 pub struct PublicKey {
     public: RsaPublicKey,
+    verifying_key: VerifyingKey<sha2::Sha256>,
 }
 
 impl PublicKey {
     pub fn new(key: RsaPublicKey) -> Self {
-        Self { public: key }
+        let verifying_key = VerifyingKey::<sha2::Sha256>::from(key.clone());
+        Self { 
+            public: key,
+            verifying_key,
+        }
+    }
+
+    pub fn from_signing_key(signing_key: &SigningKey<sha2::Sha256>) -> Self {
+        let verifying_key = signing_key.verifying_key();
+        let public = signing_key.as_ref().clone(); // Get the RsaPrivateKey and convert to public
+        let public = RsaPublicKey::from(public);
+        Self {
+            public,
+            verifying_key,
+        }
     }
 
     fn get_verifying_key(&self) -> VerifyingKey<sha2::Sha256> {
-        VerifyingKey::<sha2::Sha256>::from(self.public.clone())
+        self.verifying_key.clone()
     }
 
     pub fn armor(&self) -> String {
@@ -52,8 +66,10 @@ impl PublicKey {
     }
 
     pub fn verify(&self, data: &[u8], signature: &[u8]) -> bool {
-        let verifying_key = VerifyingKey::<sha2::Sha256>::from(self.public.clone());
-        verifying_key.verify(data, &Signature::try_from(signature).unwrap()).is_ok()
+        match Signature::try_from(signature) {
+            Ok(sig) => self.verifying_key.verify(data, &sig).is_ok(),
+            Err(_) => false
+        }
     }
 }
 
@@ -65,8 +81,9 @@ pub struct KeyPair {
 
 impl KeyPair {
     pub fn new(key: RsaPrivateKey) -> Self {
+        let signing_key = SigningKey::<sha2::Sha256>::new(key.clone());
         Self {
-            public: PublicKey::new(RsaPublicKey::from(&key)),
+            public: PublicKey::from_signing_key(&signing_key),
             private: key,
         }
     }
@@ -117,7 +134,8 @@ impl KeyPair {
     }
 
     pub fn verify(&self, data: &[u8], signature: &[u8]) -> bool {
-        let verifying_key = VerifyingKey::<sha2::Sha256>::from(self.public.public.clone());
+        let signing_key = SigningKey::<sha2::Sha256>::new(self.private.clone());
+        let verifying_key = signing_key.verifying_key();
         match Signature::try_from(signature) {
             Ok(sig) => verifying_key.verify(data, &sig).is_ok(),
             Err(_) => false
