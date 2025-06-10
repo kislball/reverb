@@ -1,0 +1,6 @@
+[workspace]
+resolver = "3"
+members = [ "rvb_clib", "rvb_contract","rvb_core", "rvb_storage","rvb_clib/test_contract", "rvb_common"]
+
+[profile.release]
+opt-level="z"

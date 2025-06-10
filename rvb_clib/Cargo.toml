@@ -1,0 +1,9 @@
+[package]
+name = "rvb_clib"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rmp-serde = "1.3.0"
+serde = { version = "1.0.219", features = ["derive"] }
+rvb_common = { path = "../rvb_common" }
