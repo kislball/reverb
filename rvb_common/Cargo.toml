@@ -6,3 +6,26 @@ edition = "2024"
 [dependencies]
 rmp-serde = "1.3.0"
 serde = { version = "1.0.219", features = ["derive"] }
+thiserror = "2.0.12"
+ed25519-dalek = { version = "2.1.1", features = [
+    "serde",
+], optional = true }
+ecies = { version = "0.2.9", features = [
+    "ed25519",
+    "pure",
+], optional = true, default-features = false }
+rand = { version = "0.8.5", optional = true }
+base64 = { version = "0.22.1", optional = true }
+serde_json = { version = "1.0.140", optional = true }
+async-trait = "0.1.88"
+
+[features]
+default = ["contract", "crypto", "schema", "json_schema", "protocol", "transport"]
+json_schema = ["dep:serde_json","schema"]
+contract = ["schema"]
+crypto = ["dep:ed25519-dalek", "dep:base64"]
+crypto_random = ["dep:rand", "crypto", "ed25519-dalek/rand_core"]
+encrypt = ["dep:ecies", "crypto"]
+transport = []
+schema = []
+protocol = ["schema"]

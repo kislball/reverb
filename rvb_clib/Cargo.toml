@@ -6,4 +6,9 @@ edition = "2024"
 [dependencies]
 rmp-serde = "1.3.0"
 serde = { version = "1.0.219", features = ["derive"] }
-rvb_common = { path = "../rvb_common" }
+rvb_common = { path = "../rvb_common", features = [
+    "contract",
+    "crypto",
+    "schema",
+    "json_schema",
+], default-features = false }

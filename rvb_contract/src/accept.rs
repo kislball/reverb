@@ -1,10 +1,12 @@
-use rvb_common::{ContractAction, ContractContext};
-use rvb_core::contract::{Contract, ContractCompiler, ContractError};
+use rvb_common::{
+    contract::{Contract, ContractCompiler, ContractContext, ContractError},
+    schema::DataAction,
+};
 
 pub struct AcceptContractCompiler;
 
 impl ContractCompiler for AcceptContractCompiler {
-    fn create_contract(&mut self, _bytecode: &[u8]) -> Result<Box<dyn Contract>, ContractError> {
+    fn create_contract(&self, _bytecode: &[u8]) -> Result<Box<dyn Contract>, ContractError> {
         Ok(Box::new(AcceptContract))
     }
 }
@@ -12,7 +14,7 @@ impl ContractCompiler for AcceptContractCompiler {
 pub struct AcceptContract;
 
 impl Contract for AcceptContract {
-    fn execute(&mut self, ctx: ContractContext) -> Result<Vec<ContractAction>, ContractError> {
+    fn execute(&mut self, ctx: ContractContext) -> Result<Vec<DataAction>, ContractError> {
         Ok(vec![ctx.action])
     }
 }

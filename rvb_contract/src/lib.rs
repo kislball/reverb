@@ -1,22 +1,24 @@
 use crate::accept::AcceptContractCompiler;
-#[cfg(feature = "wasmtime")]
 use crate::wasmtime::WasmtimeContractCompiler;
-use rvb_core::contract::ContractCompiler;
+#[cfg(feature = "runtime")]
+use rvb_common::contract::ContractCompiler;
 
 pub mod accept;
-#[cfg(feature = "wasmtime")]
+#[cfg(feature = "runtime")]
 pub mod wasmtime;
 
+#[derive(Debug, Clone, Copy)]
 pub enum ContractCompilerType {
-    #[cfg(feature = "wasmtime")]
+    #[cfg(feature = "runtime")]
     Wasmtime,
     Accept,
 }
 
+#[must_use]
 pub fn resolve_contract_runtime(feature: ContractCompilerType) -> Box<dyn ContractCompiler> {
     match feature {
         ContractCompilerType::Accept => Box::new(AcceptContractCompiler),
-        #[cfg(feature = "wasmtime")]
+        #[cfg(feature = "runtime")]
         ContractCompilerType::Wasmtime => Box::new(WasmtimeContractCompiler),
     }
 }

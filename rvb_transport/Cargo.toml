@@ -1,0 +1,20 @@
+[package]
+name = "rvb_transport"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+async-trait = "0.1.88"
+rvb_common = { path = "../rvb_common", features = ["transport"] }
+tokio = { version = "1.45.1", features = ["net", "io-util"], optional = true }
+tokio-util = { version = "0.7.15", features = ["codec"], optional = true }
+futures = { version = "0.3.31", optional = true }
+tokio-stream = { version = "0.1.17", optional = true }
+
+[features]
+tcp = [
+    "dep:tokio",
+    "dep:tokio-util",
+    "dep:futures",
+    "dep:tokio-stream",
+]

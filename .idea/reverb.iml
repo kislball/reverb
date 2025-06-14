@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/rvb_clib/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/rvb_clib/test_contract/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/rvb_common/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/rvb_contract/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/rvb_node/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/rvb_storage/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/rvb_transport/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

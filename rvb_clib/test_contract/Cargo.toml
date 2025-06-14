@@ -8,4 +8,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 rvb_clib = { path = "../../rvb_clib" }
-rvb_common = { path = "../../rvb_common" }
+serde = "1.0.219"
+wee_alloc = "0.4.5"
